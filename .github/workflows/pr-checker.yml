@@ -8,7 +8,7 @@ on:
       - feature/pr-test
   pull_request:
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
+      group: ${{ env.GITHUB_WORKFLOW }}-${{ github.ref }}
       cancel-in-progress: true
     permissions:
       actions: write
