@@ -5,6 +5,7 @@ push:
 branches:
 - main
 - dev
+- feature/pr-test
 pull_request:
 concurrency:
 group: ${{ github.workflow }}-${{ github.ref }}
