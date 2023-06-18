@@ -1,3 +1,4 @@
+@@ -0,0 +1,118 @@
 name: 🚀 Deploy
 
 on:
@@ -5,12 +6,12 @@ on:
     branches:
       - main
       - dev
-      - feature/pr-test
   pull_request:
-    
+  
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
 permissions:
   actions: write
   contents: read
@@ -22,36 +23,37 @@ jobs:
     steps:
       - name: ⬇ Checkout repo
         uses: actions/checkout@v3
+
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
         with:
           cache: npm
           cache-dependency-path: ./package.json
           node-version: 18
-          
+
       - name: 📥 Install deps
         run: npm install
-        
+
       - name: 🔬 Lint
         run: npm run lint
-
+        
   typecheck:
     name: ʦ TypeScript
     runs-on: ubuntu-latest
     steps:
       - name: ⬇ Checkout repo
         uses: actions/checkout@v3
-        
+
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
         with:
           cache: npm
           cache-dependency-path: ./package.json
           node-version: 18
-          
+
       - name: 📥 Install deps
         run: npm install
-        
+
       - name: 🔎 Type check
         run: npm run typecheck --if-present
 
@@ -61,20 +63,20 @@ jobs:
     steps:
       - name: ⬇ Checkout repo
         uses: actions/checkout@v3
-        
+
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
         with:
           cache: npm
           cache-dependency-path: ./package.json
           node-version: 18
-          
+
       - name: 📥 Install deps
         run: npm install
-        
+
       - name: ⚡ Run vitest
         run: npm run test -- --coverage
-        
+
   cypress:
     name: ⚫ Cypress
     runs-on: ubuntu-latest
@@ -92,8 +94,15 @@ jobs:
           cache-dependency-path: ./package.json
           node-version: 18
 
+      - uses: harmon758/postgresql-action@v1
+        with:
+          postgresql version: "12"
+          postgresql db: render
+          postgresql user: coffeebreak
+          postgresql password: Wizeliner
+
       - name: 📥 Download deps
-        run: npm ci
+        uses: bahmutov/npm-install@v1
 
       - name: 🛠 Setup Database
         run: npx prisma migrate reset --force
